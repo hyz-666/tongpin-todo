@@ -1,0 +1,10 @@
+{
+  "probes": [
+    { "code": "NODE", "expected": "24.x", "actual": "24.19.0", "ok": true },
+    { "code": "NPM", "expected": "11.x", "actual": "11.17.0", "ok": true },
+    { "code": "RUST", "expected": "1.98.0", "actual": "", "ok": false },
+    { "code": "CARGO", "expected": "1.98.0", "actual": "", "ok": false },
+    { "code": "MSVC_LINKER", "expected": "link.exe", "actual": "link.exe", "ok": true },
+    { "code": "RUST_TARGETS", "expected": "x86_64-pc-windows-msvc,aarch64-linux-android,x86_64-linux-android", "actual": "", "ok": false }
+  ]
+}

@@ -1,0 +1,17 @@
+# Rust build output
+/target/
+
+# WorkBuddy workspace data (never commit)
+.workbuddy/
+
+# Node
+node_modules/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.iml
