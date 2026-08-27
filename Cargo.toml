@@ -20,7 +20,7 @@ rust-version = "1.98"
 serde = { version = "1.0.229", features = ["derive"] }
 serde_json = "1.0"
 thiserror = "2.0.20"
-uuid = { version = "1.25.0", features = ["v7", "serde"] }
+uuid = { version = "1.25.0", features = ["v4", "v7", "serde"] }
 unicode-normalization = "0.1"
 proptest = "1.11.0"
 rusqlite = { version = "0.40.2", features = ["bundled-sqlcipher-vendored-openssl"] }
@@ -36,3 +36,4 @@ rand_core = { version = "0.6", features = ["getrandom"] }
 sha2 = "0.10"
 hmac = "0.12"
 ciborium = "0.2"
+snow = "0.10"

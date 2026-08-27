@@ -8,7 +8,9 @@ pub mod backup;
 pub mod dispatch;
 pub mod error;
 pub mod event;
+pub mod membership;
 pub mod open;
+pub mod pairing;
 pub mod query;
 pub mod recovery;
 pub mod runtime;
@@ -19,7 +21,9 @@ pub use apply::{ApplyBatchReceipt, SignedOperation};
 pub use dispatch::{Core, MutationReceipt, OperationSigner, SignatureBytes, SignatureVerifier};
 pub use error::CoreError;
 pub use event::{Event, EventKind, SubscriptionKind};
+pub use membership::MembershipStore;
 pub use open::{PairingPort, SyncPort};
+pub use pairing::PairingManager;
 pub use query::{
     CodePointRange, ConflictRecord, DayBucket, ListScope, Page, PagedTasks, SearchHit, TaskDetails,
     TaskQuery, TaskScope, TaskSummary, TrashEntry,
