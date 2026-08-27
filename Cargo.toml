@@ -17,4 +17,7 @@ edition = "2024"
 rust-version = "1.98"
 
 [workspace.dependencies]
-# Exact-compatible dependency ranges are added here as later tasks introduce them.
+serde = { version = "1.0.229", features = ["derive"] }
+thiserror = "2.0.20"
+uuid = { version = "1.25.0", features = ["v7", "serde"] }
+unicode-normalization = "0.1"
