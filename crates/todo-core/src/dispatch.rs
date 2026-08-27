@@ -2,6 +2,7 @@
 
 use std::collections::HashSet;
 use std::sync::Mutex;
+use std::sync::atomic::{AtomicBool, Ordering};
 
 use serde_json::Value;
 
@@ -15,10 +16,12 @@ use todo_domain::validation::{validate_list_name, validate_tag_name, validate_ti
 use todo_storage::Storage;
 use todo_storage::config::StorageConfig;
 use todo_storage::error::StorageError;
+use todo_storage::health::{SpaceProvider, UnlimitedSpace};
 use todo_storage::materialize;
 use todo_storage::repository::Repository;
 
 use crate::error::CoreError;
+use crate::recovery::ReplicaState;
 
 #[derive(Clone)]
 pub struct SignatureBytes(pub Vec<u8>);
@@ -49,6 +52,9 @@ pub struct Core {
     signer: Box<dyn OperationSigner>,
     pub(crate) verifier: Box<dyn SignatureVerifier>,
     members: Mutex<HashSet<DeviceId>>,
+    space: Box<dyn SpaceProvider>,
+    reserve_bytes: u64,
+    read_only: AtomicBool,
 }
 
 struct Spec {
@@ -349,6 +355,24 @@ impl Core {
         signer: Box<dyn OperationSigner>,
         verifier: Box<dyn SignatureVerifier>,
     ) -> Result<Self, CoreError> {
+        Self::open_with_space(
+            config,
+            device_id,
+            signer,
+            verifier,
+            Box::new(UnlimitedSpace),
+            0,
+        )
+    }
+
+    pub fn open_with_space(
+        config: StorageConfig,
+        device_id: DeviceId,
+        signer: Box<dyn OperationSigner>,
+        verifier: Box<dyn SignatureVerifier>,
+        space: Box<dyn SpaceProvider>,
+        reserve_bytes: u64,
+    ) -> Result<Self, CoreError> {
         let storage = Storage::open(config)?;
         let repo = Repository::new(storage.conn);
         let mut members = HashSet::new();
@@ -359,6 +383,9 @@ impl Core {
             signer,
             verifier,
             members: Mutex::new(members),
+            space,
+            reserve_bytes,
+            read_only: AtomicBool::new(false),
         })
     }
 
@@ -366,7 +393,28 @@ impl Core {
         self.members.lock().unwrap().insert(device);
     }
 
+    fn check_space(&self) -> Result<(), CoreError> {
+        if self.space.available_bytes() < self.reserve_bytes {
+            self.read_only.store(true, Ordering::SeqCst);
+            return Err(CoreError::ReadOnlyLowSpace);
+        }
+        Ok(())
+    }
+
+    pub fn replica_state(&self) -> ReplicaState {
+        if self.read_only.load(Ordering::SeqCst) {
+            ReplicaState::ReadOnlyLowSpace
+        } else {
+            ReplicaState::Ready
+        }
+    }
+
+    pub fn note_space_recovered(&self) {
+        self.read_only.store(false, Ordering::SeqCst);
+    }
+
     pub fn dispatch(&self, command: Command) -> Result<MutationReceipt, CoreError> {
+        self.check_space()?;
         let mut repo = self.repo.lock().unwrap();
         let specs = command_to_specs(&command)?;
         let sequence = Repository::read_frontier(&repo.conn, &self.device_id)?.unwrap_or(0);

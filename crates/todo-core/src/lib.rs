@@ -3,9 +3,11 @@
 //! The only business-data write entry point and public core service API.
 
 pub mod apply;
+pub mod backup;
 pub mod dispatch;
 pub mod error;
 pub mod query;
+pub mod recovery;
 
 pub use apply::{ApplyBatchReceipt, SignedOperation};
 pub use dispatch::{Core, MutationReceipt, OperationSigner, SignatureBytes, SignatureVerifier};
@@ -14,6 +16,7 @@ pub use query::{
     CodePointRange, ConflictRecord, DayBucket, ListScope, Page, PagedTasks, SearchHit, TaskDetails,
     TaskQuery, TaskScope, TaskSummary, TrashEntry,
 };
+pub use recovery::{RecoveryReason, ReplicaState, UnavailableReason};
 
 pub const API_VERSION: u32 = 1;
 

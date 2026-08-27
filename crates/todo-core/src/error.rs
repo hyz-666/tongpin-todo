@@ -21,10 +21,26 @@ pub enum CoreError {
     OriginGap,
     #[error("invalid command: {0}")]
     InvalidCommand(String),
+    #[error("read-only: low space")]
+    ReadOnlyLowSpace,
+    #[error("bad backup passphrase")]
+    BadPassphrase,
+    #[error("unsupported backup version")]
+    UnsupportedBackupVersion,
+    #[error("invalid backup container")]
+    InvalidBackup,
+    #[error("backup encryption failure")]
+    BackupEncryption,
 }
 
 impl From<rusqlite::Error> for CoreError {
     fn from(e: rusqlite::Error) -> Self {
         CoreError::Storage(StorageError::Sqlite(e))
+    }
+}
+
+impl From<std::io::Error> for CoreError {
+    fn from(e: std::io::Error) -> Self {
+        CoreError::Storage(StorageError::Io(e))
     }
 }
