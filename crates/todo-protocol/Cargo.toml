@@ -6,3 +6,9 @@ rust-version.workspace = true
 
 [dependencies]
 todo-domain = { path = "../todo-domain" }
+ciborium = { workspace = true }
+thiserror = { workspace = true }
+uuid = { workspace = true }
+
+[dev-dependencies]
+tempfile = { workspace = true }
