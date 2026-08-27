@@ -20,4 +20,6 @@ pub enum DomainError {
     TimeWithoutDate,
     #[error("HLC logical counter overflow")]
     HlcLogicalOverflow,
+    #[error("rank space exhausted; rebalance required")]
+    RankExhausted,
 }

@@ -13,8 +13,19 @@ impl EntityId {
         Self(Uuid::now_v7())
     }
 
+    /// Deterministic id for tests and fixtures.
+    pub fn new_v7_for_test(seed: u128) -> Self {
+        Self(Uuid::from_u128(seed))
+    }
+
     pub fn as_uuid(&self) -> &Uuid {
         &self.0
+    }
+}
+
+impl std::fmt::Display for EntityId {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.0)
     }
 }
 

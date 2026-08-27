@@ -1,6 +1,9 @@
 # Rust build output
 /target/
 
+# proptest auto-generated regression seeds (local only)
+*.proptest-regressions
+
 # WorkBuddy workspace data (never commit)
 .workbuddy/
 

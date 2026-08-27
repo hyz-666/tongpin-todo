@@ -22,3 +22,14 @@ pub enum Priority {
     Medium,
     High,
 }
+
+/// The kind of entity a projection represents.
+#[derive(
+    Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, serde::Serialize, serde::Deserialize,
+)]
+pub enum EntityKind {
+    Task,
+    Subtask,
+    List,
+    Tag,
+}
