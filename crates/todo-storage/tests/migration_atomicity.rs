@@ -25,14 +25,14 @@ fn failed_migration_rolls_back() {
 
     // A migration whose second statement is malformed, after a valid one.
     let bad = vec![Migration {
-        version: 2,
+        version: 3,
         sql: "CREATE TABLE should_rollback(id INTEGER); CREATE TABLE broken(id",
     }];
     let result = migrate(&s.conn, &bad);
     assert!(matches!(result, Err(StorageError::MigrationFailed(_))));
 
-    // Version stays at 1 and the partial DDL was rolled back.
-    assert_eq!(user_version(&s.conn).unwrap(), 1);
+    // Version stays at 2 and the partial DDL was rolled back.
+    assert_eq!(user_version(&s.conn).unwrap(), 2);
     let count: i64 = s
         .conn
         .query_row(
@@ -50,14 +50,14 @@ fn unsupported_downgrade_rejected() {
     let cfg = config(dir.path());
     let s = Storage::open(cfg.clone()).unwrap();
     // Simulate a profile written by a newer version.
-    s.conn.execute_batch("PRAGMA user_version = 2;").unwrap();
+    s.conn.execute_batch("PRAGMA user_version = 3;").unwrap();
     drop(s);
 
     assert!(matches!(
         Storage::open(cfg),
         Err(StorageError::UnsupportedDowngrade {
-            current: 2,
-            supported: 1
+            current: 3,
+            supported: 2
         })
     ));
 }

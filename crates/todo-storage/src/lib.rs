@@ -2,14 +2,17 @@
 
 //! Encrypted SQLite ownership, migrations, and durable projections.
 
+pub mod calendar;
 pub mod config;
 pub mod connection;
 pub mod error;
 pub mod frontier;
 pub mod materialize;
 pub mod migration;
+pub mod query;
 pub mod repository;
 pub mod schema;
+pub mod search;
 pub mod transaction;
 
 use rusqlite::Connection;

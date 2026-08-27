@@ -4,7 +4,7 @@
 pub const APPLICATION_ID: i32 = 0x5450_5444;
 
 /// The latest schema version this build understands.
-pub const SCHEMA_VERSION: i32 = 1;
+pub const SCHEMA_VERSION: i32 = 2;
 
 /// Every table schema version 1 must contain.
 pub const TABLES: &[&str] = &[

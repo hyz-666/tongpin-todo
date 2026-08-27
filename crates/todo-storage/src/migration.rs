@@ -11,10 +11,16 @@ pub struct Migration {
 }
 
 pub fn builtin_migrations() -> &'static [Migration] {
-    &[Migration {
-        version: 1,
-        sql: include_str!("../migrations/0001_initial.sql"),
-    }]
+    &[
+        Migration {
+            version: 1,
+            sql: include_str!("../migrations/0001_initial.sql"),
+        },
+        Migration {
+            version: 2,
+            sql: include_str!("../migrations/0002_fts.sql"),
+        },
+    ]
 }
 
 pub fn user_version(conn: &Connection) -> Result<i32, StorageError> {

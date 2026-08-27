@@ -5,10 +5,15 @@
 pub mod apply;
 pub mod dispatch;
 pub mod error;
+pub mod query;
 
 pub use apply::{ApplyBatchReceipt, SignedOperation};
 pub use dispatch::{Core, MutationReceipt, OperationSigner, SignatureBytes, SignatureVerifier};
 pub use error::CoreError;
+pub use query::{
+    CodePointRange, ConflictRecord, DayBucket, ListScope, Page, PagedTasks, SearchHit, TaskDetails,
+    TaskQuery, TaskScope, TaskSummary, TrashEntry,
+};
 
 pub const API_VERSION: u32 = 1;
 
