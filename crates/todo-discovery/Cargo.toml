@@ -1,0 +1,8 @@
+[package]
+name = "todo-discovery"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+todo-domain = { path = "../todo-domain" }

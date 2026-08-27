@@ -1,0 +1,8 @@
+[package]
+name = "todo-uniffi"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+todo-core = { path = "../todo-core" }

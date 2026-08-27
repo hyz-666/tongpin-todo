@@ -1,0 +1,12 @@
+[package]
+name = "todo-core"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+todo-domain = { path = "../todo-domain" }
+todo-storage = { path = "../todo-storage" }
+todo-crypto = { path = "../todo-crypto" }
+todo-protocol = { path = "../todo-protocol" }
+todo-discovery = { path = "../todo-discovery" }
