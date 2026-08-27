@@ -18,3 +18,7 @@ Thumbs.db
 .idea/
 .vscode/
 *.iml
+
+# Generated UniFFI bindings (reproducible; keep only .gitkeep)
+/generated/*
+!/generated/.gitkeep

@@ -70,7 +70,7 @@ impl SubscriptionRegistry {
             kind: event_kind,
         };
         let senders = self.senders.lock().unwrap();
-        for (_, (k, tx)) in senders.iter() {
+        for (k, tx) in senders.values() {
             if *k == kind {
                 // Bounded backpressure: a slow consumer's overflow is dropped,
                 // but the monotonic revision lets it detect the gap.

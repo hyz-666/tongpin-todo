@@ -4,5 +4,19 @@ version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
 
+[lib]
+crate-type = ["cdylib", "lib", "staticlib"]
+
 [dependencies]
 todo-core = { path = "../todo-core" }
+todo-domain = { path = "../todo-domain" }
+todo-storage = { path = "../todo-storage" }
+uniffi = { workspace = true }
+thiserror = { workspace = true }
+uuid = { workspace = true }
+
+[build-dependencies]
+uniffi = { workspace = true, features = ["build"] }
+
+[dev-dependencies]
+tempfile = { workspace = true }

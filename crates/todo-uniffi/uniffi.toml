@@ -1,0 +1,6 @@
+[bindings.kotlin]
+package_name = "com.tongpin.todo"
+cdylib_name = "todo_uniffi"
+
+[bindings.swift]
+cdylib_name = "todo_uniffi"
