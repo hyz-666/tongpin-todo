@@ -21,6 +21,14 @@ impl EntityId {
     pub fn as_uuid(&self) -> &Uuid {
         &self.0
     }
+
+    pub fn from_uuid(uuid: Uuid) -> Self {
+        Self(uuid)
+    }
+
+    pub fn as_bytes(&self) -> [u8; 16] {
+        *self.0.as_bytes()
+    }
 }
 
 impl std::fmt::Display for EntityId {

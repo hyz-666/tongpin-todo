@@ -2,6 +2,14 @@
 
 //! The only business-data write entry point and public core service API.
 
+pub mod apply;
+pub mod dispatch;
+pub mod error;
+
+pub use apply::{ApplyBatchReceipt, SignedOperation};
+pub use dispatch::{Core, MutationReceipt, OperationSigner, SignatureBytes, SignatureVerifier};
+pub use error::CoreError;
+
 pub const API_VERSION: u32 = 1;
 
 /// Version triple reported at every platform boundary.

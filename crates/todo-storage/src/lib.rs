@@ -5,8 +5,12 @@
 pub mod config;
 pub mod connection;
 pub mod error;
+pub mod frontier;
+pub mod materialize;
 pub mod migration;
+pub mod repository;
 pub mod schema;
+pub mod transaction;
 
 use rusqlite::Connection;
 

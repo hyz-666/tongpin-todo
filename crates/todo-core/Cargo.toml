@@ -10,3 +10,9 @@ todo-storage = { path = "../todo-storage" }
 todo-crypto = { path = "../todo-crypto" }
 todo-protocol = { path = "../todo-protocol" }
 todo-discovery = { path = "../todo-discovery" }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+rusqlite = { workspace = true }
+
+[dev-dependencies]
+tempfile = { workspace = true }
