@@ -2,21 +2,31 @@
 
 //! The only business-data write entry point and public core service API.
 
+pub mod api;
 pub mod apply;
 pub mod backup;
 pub mod dispatch;
 pub mod error;
+pub mod event;
+pub mod open;
 pub mod query;
 pub mod recovery;
+pub mod runtime;
+pub mod subscription;
 
+pub use api::CoreHandle;
 pub use apply::{ApplyBatchReceipt, SignedOperation};
 pub use dispatch::{Core, MutationReceipt, OperationSigner, SignatureBytes, SignatureVerifier};
 pub use error::CoreError;
+pub use event::{Event, EventKind, SubscriptionKind};
+pub use open::{PairingPort, SyncPort};
 pub use query::{
     CodePointRange, ConflictRecord, DayBucket, ListScope, Page, PagedTasks, SearchHit, TaskDetails,
     TaskQuery, TaskScope, TaskSummary, TrashEntry,
 };
 pub use recovery::{RecoveryReason, ReplicaState, UnavailableReason};
+pub use runtime::{PeerStatus, RuntimeStatus};
+pub use subscription::Subscription;
 
 pub const API_VERSION: u32 = 1;
 

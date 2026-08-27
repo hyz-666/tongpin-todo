@@ -31,6 +31,8 @@ pub enum CoreError {
     InvalidBackup,
     #[error("backup encryption failure")]
     BackupEncryption,
+    #[error("core is closed")]
+    Closed,
 }
 
 impl From<rusqlite::Error> for CoreError {
