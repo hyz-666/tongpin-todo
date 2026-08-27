@@ -1329,6 +1329,10 @@ dependencies = [
 name = "todo-discovery"
 version = "0.1.0"
 dependencies = [
+ "hmac",
+ "sha2",
+ "tempfile",
+ "thiserror",
  "todo-domain",
 ]
 
@@ -1348,7 +1352,13 @@ dependencies = [
 name = "todo-protocol"
 version = "0.1.0"
 dependencies = [
+ "ciborium",
+ "snow",
+ "tempfile",
+ "thiserror",
  "todo-domain",
+ "uuid",
+ "x25519-dalek",
 ]
 
 [[package]]

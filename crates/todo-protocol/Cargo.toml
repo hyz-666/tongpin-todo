@@ -9,6 +9,8 @@ todo-domain = { path = "../todo-domain" }
 ciborium = { workspace = true }
 thiserror = { workspace = true }
 uuid = { workspace = true }
+snow = { workspace = true }
 
 [dev-dependencies]
 tempfile = { workspace = true }
+x25519-dalek = { workspace = true }
