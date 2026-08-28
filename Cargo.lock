@@ -1353,6 +1353,7 @@ name = "todo-protocol"
 version = "0.1.0"
 dependencies = [
  "ciborium",
+ "sha2",
  "snow",
  "tempfile",
  "thiserror",

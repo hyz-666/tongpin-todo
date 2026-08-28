@@ -5,6 +5,7 @@
 pub mod api;
 pub mod apply;
 pub mod backup;
+pub mod checkpoint;
 pub mod dispatch;
 pub mod error;
 pub mod event;
@@ -15,9 +16,11 @@ pub mod query;
 pub mod recovery;
 pub mod runtime;
 pub mod subscription;
+pub mod sync;
 
 pub use api::CoreHandle;
 pub use apply::{ApplyBatchReceipt, SignedOperation};
+pub use checkpoint::TransferCheckpoint;
 pub use dispatch::{Core, MutationReceipt, OperationSigner, SignatureBytes, SignatureVerifier};
 pub use error::CoreError;
 pub use event::{Event, EventKind, SubscriptionKind};
@@ -31,6 +34,7 @@ pub use query::{
 pub use recovery::{RecoveryReason, ReplicaState, UnavailableReason};
 pub use runtime::{PeerStatus, RuntimeStatus};
 pub use subscription::Subscription;
+pub use sync::SyncState;
 
 pub const API_VERSION: u32 = 1;
 

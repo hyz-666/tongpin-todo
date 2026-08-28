@@ -10,6 +10,7 @@ ciborium = { workspace = true }
 thiserror = { workspace = true }
 uuid = { workspace = true }
 snow = { workspace = true }
+sha2 = { workspace = true }
 
 [dev-dependencies]
 tempfile = { workspace = true }
