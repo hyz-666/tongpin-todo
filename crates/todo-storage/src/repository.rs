@@ -11,6 +11,9 @@ use todo_domain::register::VersionStamp;
 
 use crate::error::StorageError;
 
+/// A stored operation row: `(sequence, canonical_bytes, signature)`.
+pub type StoredOperation = (u64, Vec<u8>, Option<Vec<u8>>);
+
 pub struct Repository {
     pub conn: Connection,
 }
@@ -41,6 +44,36 @@ impl Repository {
             ],
         )?;
         Ok(changed > 0)
+    }
+
+    /// Read the operations of one origin in the half-open `[from_seq, to_seq)`
+    /// range, in ascending sequence order. Returns `(sequence, canonical, signature)`.
+    pub fn read_operations(
+        conn: &Connection,
+        origin: &DeviceId,
+        from_seq: u64,
+        to_seq: u64,
+    ) -> Result<Vec<StoredOperation>, StorageError> {
+        let mut stmt = conn.prepare(
+            "SELECT origin_sequence, canonical_bytes, signature FROM operations
+             WHERE origin_device_id = ?1 AND origin_sequence >= ?2 AND origin_sequence < ?3
+             ORDER BY origin_sequence ASC",
+        )?;
+        let rows = stmt.query_map(
+            rusqlite::params![origin.as_bytes().as_slice(), from_seq as i64, to_seq as i64],
+            |row| {
+                Ok((
+                    row.get::<_, i64>(0)? as u64,
+                    row.get::<_, Vec<u8>>(1)?,
+                    row.get::<_, Option<Vec<u8>>>(2)?,
+                ))
+            },
+        )?;
+        let mut out = Vec::new();
+        for r in rows {
+            out.push(r?);
+        }
+        Ok(out)
     }
 
     // --- field_registers table ---

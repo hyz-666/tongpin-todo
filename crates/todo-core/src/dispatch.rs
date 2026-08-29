@@ -20,6 +20,7 @@ use todo_storage::health::{SpaceProvider, UnlimitedSpace};
 use todo_storage::materialize;
 use todo_storage::repository::Repository;
 
+use crate::apply::SignedOperation;
 use crate::error::CoreError;
 use crate::recovery::ReplicaState;
 
@@ -522,6 +523,29 @@ impl Core {
 
     pub fn device_id(&self) -> DeviceId {
         self.device_id
+    }
+
+    /// Export the operations of one origin in `[from_seq, to_seq)` as signed
+    /// operations, for transferring to a peer during sync.
+    pub fn export_operations(
+        &self,
+        origin: &DeviceId,
+        from_seq: u64,
+        to_seq: u64,
+    ) -> Result<Vec<SignedOperation>, CoreError> {
+        let repo = self.repo.lock().unwrap();
+        let rows = Repository::read_operations(&repo.conn, origin, from_seq, to_seq)?;
+        let mut out = Vec::with_capacity(rows.len());
+        for (_seq, canonical, signature) in rows {
+            let operation: VerifiedOperation = serde_json::from_slice(&canonical)
+                .map_err(|e| CoreError::InvalidCommand(format!("decode: {e}")))?;
+            out.push(SignedOperation {
+                signer: *origin,
+                signature: SignatureBytes(signature.unwrap_or_default()),
+                operation,
+            });
+        }
+        Ok(out)
     }
 }
 
