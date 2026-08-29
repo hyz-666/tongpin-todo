@@ -155,6 +155,18 @@ impl MembershipGraph {
         self.active.contains(device)
     }
 
+    /// All active members, deterministically ordered.
+    pub fn active_members(&self) -> Vec<DeviceId> {
+        let mut members: Vec<DeviceId> = self.active.iter().copied().collect();
+        members.sort();
+        members
+    }
+
+    /// Whether a device was historically revoked.
+    pub fn is_revoked(&self, device: &DeviceId) -> bool {
+        self.revoked.contains(device)
+    }
+
     pub fn signing_key(&self, device: &DeviceId) -> Option<&VerifyingKey> {
         self.keys.get(device)
     }

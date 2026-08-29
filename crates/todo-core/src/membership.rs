@@ -32,6 +32,28 @@ impl MembershipStore {
         self.graph.lock().unwrap().is_active(device)
     }
 
+    /// All active members, deterministically ordered.
+    pub fn active_members(&self) -> Vec<DeviceId> {
+        self.graph.lock().unwrap().active_members()
+    }
+
+    /// Whether a device was historically revoked.
+    pub fn is_revoked(&self, device: &DeviceId) -> bool {
+        self.graph.lock().unwrap().is_revoked(device)
+    }
+
+    /// Whether a device is authenticated but not yet committed.
+    pub fn is_pending(&self, device: &DeviceId) -> bool {
+        self.pending.lock().unwrap().contains_key(device)
+    }
+
+    /// All devices authenticated but not yet committed.
+    pub fn pending_members(&self) -> Vec<DeviceId> {
+        let mut members: Vec<DeviceId> = self.pending.lock().unwrap().keys().copied().collect();
+        members.sort();
+        members
+    }
+
     pub fn member_count(&self) -> usize {
         let g = self.graph.lock().unwrap();
         g.event_count()
