@@ -27,6 +27,7 @@ pub mod scheduler;
 pub mod snapshot;
 pub mod subscription;
 pub mod sync;
+pub mod triggers;
 
 pub use api::CoreHandle;
 pub use apply::{ApplyBatchReceipt, SignedOperation};
@@ -55,6 +56,7 @@ pub use scheduler::{Scheduler, SchedulerIntent, SyncDecision};
 pub use snapshot::{SnapshotV1, export_snapshot, import_snapshot};
 pub use subscription::Subscription;
 pub use sync::SyncState;
+pub use triggers::{SyncTriggers, TriggerDecision, TriggerSource};
 
 pub const API_VERSION: u32 = 1;
 
