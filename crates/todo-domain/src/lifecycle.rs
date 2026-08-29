@@ -29,6 +29,11 @@ pub(crate) fn apply_delete(
         }
         entity.deleted = true;
         entity.tombstone = Some(op.stamp);
+        // Revoke field writes that are causally newer than this delete. A peer
+        // that had not yet learned about the delete may have applied them
+        // locally; without this cleanup that replica keeps fields the deleting
+        // replica rejected, and the two never converge.
+        entity.fields.retain(|_, reg| reg.stamp <= op.stamp);
     }
 
     let mut affected = vec![op.entity];
