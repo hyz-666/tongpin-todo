@@ -38,3 +38,11 @@ sha2 = "0.10"
 hmac = "0.12"
 ciborium = "0.2"
 snow = "0.10"
+
+# Release profile: full LTO, stripped binaries, single codegen unit for
+# smaller and faster artifacts. Used by scripts/release.ps1.
+[profile.release]
+lto = true
+codegen-units = 1
+strip = true
+opt-level = 3
