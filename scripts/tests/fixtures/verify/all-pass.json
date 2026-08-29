@@ -1,0 +1,7 @@
+{
+  "steps": [
+    { "code": "FMT", "label": "cargo fmt --all --check", "ok": true, "exit_code": 0, "duration_ms": 12, "output": "" },
+    { "code": "CLIPPY", "label": "cargo clippy --workspace --all-targets -- -D warnings", "ok": true, "exit_code": 0, "duration_ms": 34, "output": "" },
+    { "code": "TEST", "label": "cargo test --workspace", "ok": true, "exit_code": 0, "duration_ms": 120, "output": "" }
+  ]
+}
