@@ -1,0 +1,17 @@
+[package]
+name = "tongpin-windows"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+todo-core = { path = "../../../crates/todo-core" }
+todo-crypto = { path = "../../../crates/todo-crypto" }
+todo-discovery = { path = "../../../crates/todo-discovery" }
+todo-protocol = { path = "../../../crates/todo-protocol" }
+mdns-sd = "0.21"
+tokio = { version = "1.53", features = ["rt", "net", "time", "sync"] }
+uuid = { workspace = true }
+
+[dev-dependencies]
+tempfile = { workspace = true }
