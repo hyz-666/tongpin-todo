@@ -7,6 +7,7 @@ pub mod apply;
 pub mod backoff;
 pub mod backup;
 pub mod checkpoint;
+pub mod compaction;
 pub mod dispatch;
 pub mod error;
 pub mod event;
@@ -16,9 +17,11 @@ pub mod open;
 pub mod pairing;
 pub mod peer_runtime;
 pub mod query;
+pub mod rebuild;
 pub mod recovery;
 pub mod runtime;
 pub mod scheduler;
+pub mod snapshot;
 pub mod subscription;
 pub mod sync;
 
@@ -26,6 +29,7 @@ pub use api::CoreHandle;
 pub use apply::{ApplyBatchReceipt, SignedOperation};
 pub use backoff::{AttemptCounter, chunk_retry_delay, dial_delay};
 pub use checkpoint::TransferCheckpoint;
+pub use compaction::{StableWatermark, compute_watermark, tombstone_collectable};
 pub use dispatch::{Core, MutationReceipt, OperationSigner, SignatureBytes, SignatureVerifier};
 pub use error::CoreError;
 pub use event::{Event, EventKind, SubscriptionKind};
@@ -38,9 +42,11 @@ pub use query::{
     CodePointRange, ConflictRecord, DayBucket, ListScope, Page, PagedTasks, SearchHit, TaskDetails,
     TaskQuery, TaskScope, TaskSummary, TrashEntry,
 };
+pub use rebuild::{rebuild_projection, rebuild_with_cutoff};
 pub use recovery::{RecoveryReason, ReplicaState, UnavailableReason};
 pub use runtime::{PeerStatus, RuntimeStatus};
 pub use scheduler::{Scheduler, SchedulerIntent, SyncDecision};
+pub use snapshot::{SnapshotV1, export_snapshot, import_snapshot};
 pub use subscription::Subscription;
 pub use sync::SyncState;
 

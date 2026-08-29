@@ -3,6 +3,7 @@
 //! Encrypted SQLite ownership, migrations, and durable projections.
 
 pub mod calendar;
+pub mod compaction;
 pub mod config;
 pub mod connection;
 pub mod error;
@@ -21,6 +22,8 @@ use rusqlite::Connection;
 
 use crate::config::StorageConfig;
 use crate::error::StorageError;
+
+pub use compaction::{CompactionPlan, compactable};
 
 pub const API_VERSION: u32 = 1;
 
