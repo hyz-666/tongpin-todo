@@ -4,35 +4,43 @@
 
 pub mod api;
 pub mod apply;
+pub mod backoff;
 pub mod backup;
 pub mod checkpoint;
 pub mod dispatch;
 pub mod error;
 pub mod event;
 pub mod membership;
+pub mod network_runtime;
 pub mod open;
 pub mod pairing;
+pub mod peer_runtime;
 pub mod query;
 pub mod recovery;
 pub mod runtime;
+pub mod scheduler;
 pub mod subscription;
 pub mod sync;
 
 pub use api::CoreHandle;
 pub use apply::{ApplyBatchReceipt, SignedOperation};
+pub use backoff::{AttemptCounter, chunk_retry_delay, dial_delay};
 pub use checkpoint::TransferCheckpoint;
 pub use dispatch::{Core, MutationReceipt, OperationSigner, SignatureBytes, SignatureVerifier};
 pub use error::CoreError;
 pub use event::{Event, EventKind, SubscriptionKind};
 pub use membership::MembershipStore;
+pub use network_runtime::NetworkRuntime;
 pub use open::{PairingPort, SyncPort};
 pub use pairing::PairingManager;
+pub use peer_runtime::PeerRuntime;
 pub use query::{
     CodePointRange, ConflictRecord, DayBucket, ListScope, Page, PagedTasks, SearchHit, TaskDetails,
     TaskQuery, TaskScope, TaskSummary, TrashEntry,
 };
 pub use recovery::{RecoveryReason, ReplicaState, UnavailableReason};
 pub use runtime::{PeerStatus, RuntimeStatus};
+pub use scheduler::{Scheduler, SchedulerIntent, SyncDecision};
 pub use subscription::Subscription;
 pub use sync::SyncState;
 

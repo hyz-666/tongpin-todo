@@ -1,8 +1,9 @@
 //! Per-peer session state machine.
 
 /// Per-peer connection state.
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
 pub enum SessionState {
+    #[default]
     Offline,
     Dialing,
     Handshaking,
