@@ -1,24 +1,27 @@
 //! Session driver: replica models and convergence comparison.
+//!
+//! A `Replica` wraps an in-memory projection plus its operation log.
+//! It is the fundamental building block for convergence tests.
 
 use std::collections::BTreeSet;
 
-use todo_domain::ids::OperationId;
+use todo_domain::ids::{DeviceId, OperationId};
 use todo_domain::operation::{ReplicaProjection, VerifiedOperation, apply_operation};
 
 /// A replica under test: its projection plus the operations it retains.
 /// A `BTreeSet` of operation ids keeps synchronization linear rather than
 /// quadratic, so large deterministic suites stay fast.
 pub struct Replica {
-    pub name: String,
+    pub device: DeviceId,
     pub projection: ReplicaProjection,
     pub log: Vec<VerifiedOperation>,
     seen: BTreeSet<OperationId>,
 }
 
 impl Replica {
-    pub fn new(name: &str) -> Self {
+    pub fn new(device: DeviceId) -> Self {
         Self {
-            name: name.to_string(),
+            device,
             projection: ReplicaProjection::default(),
             log: Vec::new(),
             seen: BTreeSet::new(),
@@ -27,6 +30,11 @@ impl Replica {
 
     /// Apply a locally-originated operation.
     pub fn apply_local(&mut self, op: VerifiedOperation) {
+        self.apply_operation(op);
+    }
+
+    /// Apply an operation (idempotent — duplicates are silently skipped).
+    pub fn apply_operation(&mut self, op: VerifiedOperation) {
         let id = op.stamp.operation;
         if !self.seen.insert(id) {
             return;
@@ -40,8 +48,18 @@ impl Replica {
     /// converges.
     pub fn sync_from(&mut self, other: &Replica) {
         for op in &other.log {
-            self.apply_local(op.clone());
+            self.apply_operation(op.clone());
         }
+    }
+
+    /// Read-only access to the operation log.
+    pub fn ops(&self) -> &[VerifiedOperation] {
+        &self.log
+    }
+
+    /// Read-only access to the materialized state.
+    pub fn state(&self) -> &ReplicaProjection {
+        &self.projection
     }
 }
 

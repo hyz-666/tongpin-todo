@@ -1,98 +1,149 @@
-//! Deterministic fault injection for frames in transit.
+//! Deterministic fault injection for the simulated LAN.
+//!
+//! A `FaultNetwork` sits between two peers and transforms frames in transit:
+//! dropping, duplicating, reordering, truncating, corrupting, delaying, or
+//! pausing them. All transformations derive from a fixed seed, so a failing
+//! scenario can be replayed exactly.
 
-/// The kinds of faults a hostile or lossy LAN can inflict.
+use std::collections::{BTreeMap, BTreeSet, VecDeque};
+
+/// How frames from a given peer are mangled in transit.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Fault {
-    /// The frame never arrives.
-    Drop,
-    /// The frame arrives twice.
-    Duplicate,
-    /// The frame arrives truncated.
-    Truncate,
-    /// A byte in the frame is flipped.
-    Corrupt,
-    /// Adjacent frames arrive out of order.
-    Reorder,
-    /// The frame is delivered unmodified.
+    /// Delivered unchanged.
     Pass,
+    /// Silently discarded.
+    Drop,
+    /// Delivered twice.
+    Duplicate,
+    /// Delivered out of order.
+    Reorder,
+    /// Only the first half of the bytes are delivered.
+    Truncate,
+    /// A byte is flipped.
+    Corrupt,
+    /// Held until explicitly delivered.
+    Delay,
 }
 
-/// A deterministic, seed-driven network that transforms frames in flight.
+impl Fault {
+    pub const ALL: [Fault; 7] = [
+        Fault::Pass,
+        Fault::Drop,
+        Fault::Duplicate,
+        Fault::Reorder,
+        Fault::Truncate,
+        Fault::Corrupt,
+        Fault::Delay,
+    ];
+}
+
+/// A deterministic, seed-driven network between numbered peers.
 pub struct FaultNetwork {
     seed: u64,
-    frames: Vec<Vec<u8>>,
-    pending: Vec<Vec<u8>>,
+    queues: BTreeMap<u8, VecDeque<Vec<u8>>>,
+    paused: BTreeSet<u8>,
+    policy: BTreeMap<u8, Fault>,
 }
 
 impl FaultNetwork {
     pub fn new(seed: u64) -> Self {
         Self {
             seed,
-            frames: Vec::new(),
-            pending: Vec::new(),
+            queues: BTreeMap::new(),
+            paused: BTreeSet::new(),
+            policy: BTreeMap::new(),
         }
     }
 
-    /// Queue a frame for delivery.
-    pub fn send(&mut self, frame: Vec<u8>) {
-        self.frames.push(frame);
+    /// Set how frames from `from` are transformed.
+    pub fn set_policy(&mut self, from: u8, fault: Fault) {
+        self.policy.insert(from, fault);
     }
 
-    fn next_random(&mut self) -> u64 {
-        // xorshift64* for reproducible sequences.
-        let mut x = self.seed;
-        x ^= x >> 12;
-        x ^= x << 25;
-        x ^= x >> 27;
-        self.seed = x;
-        x.wrapping_mul(0x2545_F491_4F6C_DD1D)
+    /// Pause delivery from a peer (frames queue up but are not delivered).
+    pub fn pause(&mut self, from: u8) {
+        self.paused.insert(from);
     }
 
-    /// Drain queued frames into the delivery pipeline, applying a fault
-    /// pattern chosen deterministically from the seed.
-    pub fn apply(&mut self, fault: Fault) {
-        let frames = std::mem::take(&mut self.frames);
-        for (index, frame) in frames.into_iter().enumerate() {
-            let effective = if index.is_multiple_of(2) { fault } else { Fault::Pass };
-            match effective {
-                Fault::Drop => {}
-                Fault::Duplicate => {
-                    self.pending.push(frame.clone());
-                    self.pending.push(frame);
+    /// Resume delivery from a peer.
+    pub fn resume(&mut self, from: u8) {
+        self.paused.remove(&from);
+    }
+
+    /// Queue one frame from `from`, applying the configured fault.
+    pub fn send(&mut self, from: u8, bytes: Vec<u8>) {
+        let fault = self.policy.get(&from).copied().unwrap_or(Fault::Pass);
+        let mut batch = match fault {
+            Fault::Pass | Fault::Delay => vec![bytes],
+            Fault::Drop => {
+                if self.next_bool() {
+                    vec![bytes]
+                } else {
+                    vec![]
                 }
-                Fault::Truncate => {
-                    let keep = frame.len() / 2;
-                    self.pending.push(frame[..keep].to_vec());
-                }
-                Fault::Corrupt => {
-                    let mut f = frame.clone();
-                    if !f.is_empty() {
-                        let pos = (self.next_random() as usize) % f.len();
-                        f[pos] ^= 0xFF;
-                    }
-                    self.pending.push(f);
-                }
-                Fault::Reorder => {
-                    self.pending.push(frame);
-                    if self.pending.len() >= 2 {
-                        let n = self.pending.len();
-                        self.pending.swap(n - 1, n - 2);
-                    }
-                }
-                Fault::Pass => self.pending.push(frame),
             }
+            Fault::Duplicate => {
+                if self.next_bool() {
+                    vec![bytes.clone(), bytes]
+                } else {
+                    vec![bytes]
+                }
+            }
+            Fault::Reorder => vec![bytes],
+            Fault::Truncate => {
+                let half = bytes.len() / 2;
+                vec![bytes[..half].to_vec()]
+            }
+            Fault::Corrupt => {
+                let mut out = bytes;
+                if let Some(b) = out.first_mut() {
+                    *b ^= 0xFF;
+                }
+                vec![out]
+            }
+        };
+
+        let queue = self.queues.entry(from).or_default();
+        if fault == Fault::Reorder && queue.len() >= 2 {
+            // Insert before the last frame instead of appending.
+            let last = queue.pop_back().unwrap();
+            queue.extend(batch.drain(..));
+            queue.push_back(last);
+        } else {
+            queue.extend(batch);
         }
     }
 
-    /// Deliver the next transformed frame, if any.
-    pub fn deliver(&mut self) -> Option<Vec<u8>> {
-        if self.pending.is_empty() {
-            return None;
+    /// Take everything currently deliverable from `from`.
+    pub fn deliver_to(&mut self, from: u8) -> Vec<Vec<u8>> {
+        if self.paused.contains(&from) {
+            return Vec::new();
         }
-        Some(self.pending.remove(0))
+        let fault = self.policy.get(&from).copied().unwrap_or(Fault::Pass);
+        if fault == Fault::Delay {
+            return Vec::new();
+        }
+        let queue = self.queues.entry(from).or_default();
+        queue.drain(..).collect()
     }
 
-    pub fn pending_count(&self) -> usize {
-        self.pending.len()
+    /// Deliver queued frames even when delayed or paused (used to resume).
+    pub fn force_deliver(&mut self, from: u8) -> Vec<Vec<u8>> {
+        let queue = self.queues.entry(from).or_default();
+        queue.drain(..).collect()
+    }
+
+    pub fn pending(&self, from: u8) -> usize {
+        self.queues.get(&from).map(|q| q.len()).unwrap_or(0)
+    }
+
+    fn next_bool(&mut self) -> bool {
+        let mut x = self.seed;
+        x ^= x << 13;
+        x ^= x >> 7;
+        x ^= x << 17;
+        self.seed = x;
+        x.is_multiple_of(2)
     }
 }

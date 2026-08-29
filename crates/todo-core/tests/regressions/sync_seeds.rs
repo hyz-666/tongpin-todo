@@ -54,8 +54,8 @@ fn generate(count: usize, seed: u64) -> Vec<VerifiedOperation> {
 #[test]
 fn two_replicas_converge_over_10k_operations() {
     let ops = generate(OP_COUNT, SEED);
-    let mut a = Replica::new("A");
-    let mut b = Replica::new("B");
+    let mut a = Replica::new(DeviceId::from_bytes([1; 32]));
+    let mut b = Replica::new(DeviceId::from_bytes([2; 32]));
 
     // Split the work: A originates the even indices, B the odd ones.
     for (i, op) in ops.iter().enumerate() {
@@ -77,9 +77,9 @@ fn two_replicas_converge_over_10k_operations() {
 #[test]
 fn three_replicas_converge_over_10k_operations() {
     let ops = generate(OP_COUNT, SEED);
-    let mut a = Replica::new("A");
-    let mut b = Replica::new("B");
-    let mut c = Replica::new("C");
+    let mut a = Replica::new(DeviceId::from_bytes([1; 32]));
+    let mut b = Replica::new(DeviceId::from_bytes([2; 32]));
+    let mut c = Replica::new(DeviceId::from_bytes([3; 32]));
 
     // Round-robin origin across three replicas.
     for (i, op) in ops.iter().enumerate() {

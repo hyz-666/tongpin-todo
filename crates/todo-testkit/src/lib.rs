@@ -10,6 +10,8 @@ pub mod session_driver;
 
 pub use fault_network::{Fault, FaultNetwork};
 pub use security_fixtures::{
-    signed_operation, substitute_author, tamper_payload, verify_valid, verify_with_wrong_key,
+    fixture_device, fixture_entity, rejects_without_mutation, signed_op_pair, signed_operation,
+    signed_operation_bytes, substitute_author, tamper_payload, tampered_variants, verify_valid,
+    verify_with_wrong_key,
 };
 pub use session_driver::{Replica, all_converged, converged};
