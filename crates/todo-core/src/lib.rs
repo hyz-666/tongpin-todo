@@ -14,6 +14,7 @@ pub mod event;
 pub mod membership;
 pub mod network_runtime;
 pub mod open;
+pub mod orchestrator;
 pub mod pairing;
 pub mod peer_runtime;
 pub mod query;
@@ -36,6 +37,7 @@ pub use event::{Event, EventKind, SubscriptionKind};
 pub use membership::MembershipStore;
 pub use network_runtime::NetworkRuntime;
 pub use open::{PairingPort, SyncPort};
+pub use orchestrator::{SyncAction, SyncOrchestrator, SyncPhase, SyncStep};
 pub use pairing::PairingManager;
 pub use peer_runtime::PeerRuntime;
 pub use query::{
