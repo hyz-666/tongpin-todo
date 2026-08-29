@@ -19,18 +19,19 @@ tongpin-todo 是一个**本地优先、可跨设备同步**的待办事项应用
 
 ## 2. 当前状态
 
-**Plan 1（core-local-data，本地核心数据）已 100% 完成。**
+**Plan 1（core-local-data）与 Plan 2（lan-sync-security）与 Plan 3（跨设备发布）均已 100% 完成。**
 
 | 里程碑 | 状态 |
 |--------|------|
 | Plan 1：本地核心数据 | ✅ 完成（10/10 Task） |
-| Plan 2：LAN 同步与安全 | ⬜ 待开始 |
-| Plan 3：跨设备发布 | ⬜ 待开始 |
+| Plan 2：LAN 同步与安全 | ✅ 完成（10/10 Task） |
+| Plan 3：跨设备发布 | ✅ 完成（10/10 Task） |
 | Plan 4：Android 手机/平板 | ⬜ 待开始 |
 | Plan 5：Windows MVP 客户端 | ⬜ 待开始 |
 
-- Git 提交：10 个（`ffd1586` → `4d47bb6`）
-- 测试：**99 个全绿**，`cargo fmt` + `cargo clippy -D warnings` 全部通过
+- Git 提交：30+ 个（`ffd1586` → `bcee83b`）
+- 测试：**304 个全绿**，`cargo fmt` + `cargo clippy -D warnings` 全部通过
+- 统一门禁：`scripts/verify.ps1`（fmt + clippy + test）
 - 仓库：https://github.com/hyz-666/tongpin-todo
 
 ---
@@ -198,7 +199,5 @@ Operation {
 
 | Plan | 内容 | 关键点 |
 |------|------|--------|
-| **Plan 2** | LAN 同步与安全 | Noise XX/IK 握手、mDNS 发现、成员管理、todo-crypto/protocol/discovery 落地 |
-| **Plan 3** | 跨设备发布 | 同步触发、配对流程、多设备一致性 |
 | **Plan 4** | Android 手机/平板 | Kotlin 绑定、移动端 UI |
 | **Plan 5** | Windows MVP 客户端 | 桌面端 UI、完整产品形态 |
