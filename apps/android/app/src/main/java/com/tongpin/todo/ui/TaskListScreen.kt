@@ -1,5 +1,6 @@
 package com.tongpin.todo.ui
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -12,7 +13,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
@@ -21,16 +21,11 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextDecoration
@@ -45,7 +40,7 @@ fun TaskListScreen(viewModel: TodoViewModel) {
     val tasks by viewModel.tasks.collectAsStateWithLifecycle()
     val scope by viewModel.scope.collectAsStateWithLifecycle()
     val loading by viewModel.loading.collectAsStateWithLifecycle()
-    val showAddDialog by viewModel.showAddDialog.collectAsStateWithLifecycle()
+    val editTarget by viewModel.editTarget.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {
@@ -66,16 +61,25 @@ fun TaskListScreen(viewModel: TodoViewModel) {
                 else -> TaskList(
                     tasks = tasks,
                     onToggle = viewModel::toggleCompleted,
+                    onEdit = viewModel::onEditClick,
                     onDelete = viewModel::deleteTask,
                 )
             }
         }
     }
 
-    if (showAddDialog) {
-        QuickAddDialog(
-            onConfirm = viewModel::addTask,
-            onDismiss = viewModel::onDismissAdd,
+    editTarget?.let { target ->
+        TaskEditDialog(
+            target = target,
+            onConfirm = { title, description, dueDate, dueTime, priority ->
+                when (target) {
+                    is EditTarget.New ->
+                        viewModel.createTask(title, description, dueDate, dueTime, priority)
+                    is EditTarget.Existing ->
+                        viewModel.saveTask(target.task, title, description, dueDate, dueTime, priority)
+                }
+            },
+            onDismiss = viewModel::onDismissEdit,
         )
     }
 }
@@ -100,6 +104,7 @@ private fun ScopeSelector(selected: ListScope, onSelect: (ListScope) -> Unit) {
 private fun TaskList(
     tasks: List<TaskItem>,
     onToggle: (TaskItem) -> Unit,
+    onEdit: (TaskItem) -> Unit,
     onDelete: (TaskItem) -> Unit,
 ) {
     LazyColumn(
@@ -107,7 +112,12 @@ private fun TaskList(
         contentPadding = PaddingValues(vertical = 8.dp),
     ) {
         items(tasks, key = { it.id }) { task ->
-            TaskRow(task = task, onToggle = { onToggle(task) }, onDelete = { onDelete(task) })
+            TaskRow(
+                task = task,
+                onToggle = { onToggle(task) },
+                onEdit = { onEdit(task) },
+                onDelete = { onDelete(task) },
+            )
             HorizontalDivider()
         }
     }
@@ -117,10 +127,11 @@ private fun TaskList(
 private fun TaskRow(
     task: TaskItem,
     onToggle: () -> Unit,
+    onEdit: () -> Unit,
     onDelete: () -> Unit,
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth().padding(start = 4.dp, end = 4.dp),
+        modifier = Modifier.fillMaxWidth().clickable(onClick = onEdit).padding(start = 4.dp, end = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Checkbox(checked = task.completed, onCheckedChange = { onToggle() })
@@ -164,36 +175,4 @@ private fun EmptyState(scope: ListScope) {
     ) {
         Text("「${scope.label}」暂无任务", style = MaterialTheme.typography.bodyLarge)
     }
-}
-
-@Composable
-private fun QuickAddDialog(
-    onConfirm: (String) -> Unit,
-    onDismiss: () -> Unit,
-) {
-    var title by remember { mutableStateOf("") }
-
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text("新建任务") },
-        text = {
-            OutlinedTextField(
-                value = title,
-                onValueChange = { title = it },
-                singleLine = true,
-                label = { Text("标题") },
-            )
-        },
-        confirmButton = {
-            TextButton(
-                onClick = { onConfirm(title) },
-                enabled = title.isNotBlank(),
-            ) {
-                Text("添加")
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) { Text("取消") }
-        },
-    )
 }

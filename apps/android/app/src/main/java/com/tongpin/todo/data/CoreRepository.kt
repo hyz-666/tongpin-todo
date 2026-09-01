@@ -68,6 +68,15 @@ class CoreRepository(
     suspend fun restoreTask(taskId: String): Result<FfiMutationReceipt> =
         withIo { session.dispatch(FfiCommand.RestoreTask(task = taskId)) }
 
+    /**
+     * Sets a single task field. [field] is one of "title", "description",
+     * "priority", "due_date", "due_time"; an empty [value] clears the field.
+     */
+    suspend fun setField(taskId: String, field: String, value: String): Result<FfiMutationReceipt> =
+        withIo {
+            session.dispatch(FfiCommand.SetTaskField(task = taskId, field = field, value = value))
+        }
+
     /** Full-text search; returns matching task ids in relevance order. */
     suspend fun searchIds(text: String): Result<List<String>> = withIo {
         session.search(text, SEARCH_LIMIT).map { it.taskId }

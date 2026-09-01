@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.tongpin.todo.TodoApplication
 import com.tongpin.todo.data.CoreRepository
 import com.tongpin.todo.data.ListScope
+import com.tongpin.todo.data.Priority
 import com.tongpin.todo.data.TaskItem
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,7 +15,7 @@ import kotlinx.coroutines.launch
 
 /**
  * UI state holder for the task list. Delegates reads/writes to [CoreRepository]
- * and exposes scope/loading state as [StateFlow] for Compose.
+ * and exposes scope/loading/edit state as [StateFlow] for Compose.
  */
 class TodoViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -29,8 +30,8 @@ class TodoViewModel(application: Application) : AndroidViewModel(application) {
     private val _loading = MutableStateFlow(false)
     val loading: StateFlow<Boolean> = _loading.asStateFlow()
 
-    private val _showAddDialog = MutableStateFlow(false)
-    val showAddDialog: StateFlow<Boolean> = _showAddDialog.asStateFlow()
+    private val _editTarget = MutableStateFlow<EditTarget?>(null)
+    val editTarget: StateFlow<EditTarget?> = _editTarget.asStateFlow()
 
     init {
         refresh()
@@ -43,11 +44,15 @@ class TodoViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun onAddClick() {
-        _showAddDialog.value = true
+        _editTarget.value = EditTarget.New
     }
 
-    fun onDismissAdd() {
-        _showAddDialog.value = false
+    fun onEditClick(task: TaskItem) {
+        _editTarget.value = EditTarget.Existing(task)
+    }
+
+    fun onDismissEdit() {
+        _editTarget.value = null
     }
 
     fun refresh() {
@@ -72,12 +77,50 @@ class TodoViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    /** Quick-add with a title only; the full editor lives in the edit dialog. */
-    fun addTask(title: String) {
+    /** Creates a new task from the editor's field values. */
+    fun createTask(
+        title: String,
+        description: String,
+        dueDate: String,
+        dueTime: String,
+        priority: Priority,
+    ) {
         viewModelScope.launch {
-            repository.createTask(title = title.trim())
-            _showAddDialog.value = false
+            repository.createTask(
+                title = title.trim(),
+                description = description,
+                dueDate = dueDate.ifBlank { null },
+                dueTime = dueTime.ifBlank { null },
+                priority = priority.wire,
+            )
+            _editTarget.value = null
             refresh()
         }
     }
+
+    /** Persists edited fields for an existing task. */
+    fun saveTask(
+        task: TaskItem,
+        title: String,
+        description: String,
+        dueDate: String,
+        dueTime: String,
+        priority: Priority,
+    ) {
+        viewModelScope.launch {
+            repository.setField(task.id, "title", title.trim())
+            repository.setField(task.id, "description", description)
+            repository.setField(task.id, "priority", priority.wire)
+            repository.setField(task.id, "due_date", dueDate)
+            repository.setField(task.id, "due_time", dueTime)
+            _editTarget.value = null
+            refresh()
+        }
+    }
+}
+
+/** Target of the task editor dialog: create a new task or edit an existing one. */
+sealed interface EditTarget {
+    data object New : EditTarget
+    data class Existing(val task: TaskItem) : EditTarget
 }
