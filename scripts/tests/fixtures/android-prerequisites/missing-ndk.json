@@ -1,0 +1,14 @@
+{
+  "probes": [
+    { "code": "ANDROID_HOME", "expected": "set", "actual": "C:\\Users\\dev\\AppData\\Local\\Android\\Sdk", "ok": true },
+    { "code": "SDKMANAGER", "expected": "cmdline-tools", "actual": "C:\\...\\sdkmanager.bat", "ok": true },
+    { "code": "SDK_PLATFORM", "expected": "android-37", "actual": "android-37", "ok": true },
+    { "code": "BUILD_TOOLS", "expected": "36.0.0", "actual": "36.0.0", "ok": true },
+    { "code": "NDK", "expected": "28.2.13676358", "actual": "missing", "ok": false },
+    { "code": "JDK", "expected": "17", "actual": "17", "ok": true },
+    { "code": "GRADLE", "expected": "9.x", "actual": "Gradle 9.4.1", "ok": true },
+    { "code": "CARGO_NDK", "expected": "4.x", "actual": "cargo-ndk 4.1.2", "ok": true },
+    { "code": "UNIFFI_BINDGEN", "expected": "pinned", "actual": "present", "ok": true },
+    { "code": "RUST_TARGETS", "expected": "aarch64-linux-android,x86_64-linux-android", "actual": "aarch64-linux-android,x86_64-linux-android", "ok": true }
+  ]
+}
