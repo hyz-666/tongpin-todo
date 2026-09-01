@@ -1,0 +1,8 @@
+{
+  "steps": [
+    { "code": "CHECK", "label": "check-android-prerequisites", "ok": true, "exit_code": 0, "duration_ms": 1, "output": "" },
+    { "code": "BINDGEN", "label": "generate-kotlin-bindings", "ok": true, "exit_code": 0, "duration_ms": 1, "output": "" },
+    { "code": "CARGO_NDK", "label": "cargo ndk", "ok": true, "exit_code": 0, "duration_ms": 1, "output": "" },
+    { "code": "GRADLE", "label": "gradle assembleDebug", "ok": true, "exit_code": 0, "duration_ms": 1, "output": "" }
+  ]
+}

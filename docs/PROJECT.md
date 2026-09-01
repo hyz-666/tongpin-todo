@@ -19,14 +19,14 @@ tongpin-todo 是一个**本地优先、可跨设备同步**的待办事项应用
 
 ## 2. 当前状态
 
-**Plan 1（core-local-data）与 Plan 2（lan-sync-security）与 Plan 3（跨设备发布）均已 100% 完成。**
+**Plan 1（core-local-data）、Plan 2（lan-sync-security）、Plan 3（跨设备发布）与 Plan 4（Android 手机/平板）均已 100% 完成。**
 
 | 里程碑 | 状态 |
 |--------|------|
 | Plan 1：本地核心数据 | ✅ 完成（10/10 Task） |
 | Plan 2：LAN 同步与安全 | ✅ 完成（10/10 Task） |
 | Plan 3：跨设备发布 | ✅ 完成（10/10 Task） |
-| Plan 4：Android 手机/平板 | ⬜ 待开始 |
+| Plan 4：Android 手机/平板 | ✅ 完成（10/10 Task） |
 | Plan 5：Windows MVP 客户端 | ⬜ 待开始 |
 
 - Git 提交：30+ 个（`ffd1586` → `bcee83b`）
@@ -50,6 +50,10 @@ tongpin-todo 是一个**本地优先、可跨设备同步**的待办事项应用
 | 并发 | std::sync（Mutex/mpsc/atomic） |
 | FFI | UniFFI 0.32（proc-macro 方式） |
 | 测试 | proptest + tempfile |
+| Android UI | Kotlin 2.2.20 + Jetpack Compose（BOM 2025.06.01，Material 3） |
+| Android 构建 | AGP 9.2.0 / Gradle 9.4.1 / JDK 17 / compileSdk 37 / minSdk 31 / NDK 28.2.13676358 |
+| Android FFI 桥接 | JNA 5.16.0（UniFFI Kotlin 绑定）+ `cargo ndk` 交叉编译 |
+| 绑定生成 | `tools/uniffi-bindgen`（workspace 工具 crate，锁定 uniffi cli feature） |
 
 ---
 
@@ -176,6 +180,13 @@ Operation {
 - `cargo fmt --all --check` 通过
 - `cargo clippy --workspace --all-targets -- -D warnings` 通过
 
+**Android（Plan 4）质量门禁**：
+
+- `scripts/check-android-prerequisites.ps1` 工具链检查器（探测 + 补救，配契约测试）
+- `scripts/generate-kotlin-bindings.ps1` 版本契约校验 + cdylib 构建 + Kotlin 绑定生成
+- `scripts/build-android.ps1` 四步端到端构建（检查 → 绑定 → `cargo ndk` → `gradle`）
+- 契约测试：`check-android-prerequisites.Tests.ps1`、`build-android.Tests.ps1`（fixture 模式，全绿）
+
 ---
 
 ## 9. 版本历史
@@ -193,11 +204,25 @@ Operation {
 | `e68675c` | 修订版本地优先服务 API |
 | `4d47bb6` | 冻结共享核心 FFI 契约 |
 
+**Plan 4 — Android 手机/平板**：
+
+| Commit | 内容 |
+|--------|------|
+| `78dc9c4` | 搭建 Gradle 工程骨架 + 工具链检查器 |
+| `32f50d3` | 新增 workspace uniffi-bindgen 工具 crate 并重新生成绑定 |
+| `64bb95d` | JNI 原生库加载器与会话包装 |
+| `1d4794c` | Keystore 密钥与设备身份提供者 |
+| `57886f5` | 仓储层与 UI 领域模型 |
+| `0afb338` | Compose 主题、任务列表界面与应用装配 |
+| `411af22` | 任务编辑对话框（新建/编辑） |
+| `1e2a80e` | 接入生命周期与网络同步触发 |
+| `24f3cdf` | mDNS 发现与局域网同步管理器 |
+| Task 10 | 构建脚本 + 工具链文档 |
+
 ---
 
 ## 10. 下一步计划
 
 | Plan | 内容 | 关键点 |
 |------|------|--------|
-| **Plan 4** | Android 手机/平板 | Kotlin 绑定、移动端 UI |
-| **Plan 5** | Windows MVP 客户端 | 桌面端 UI、完整产品形态 |
+| **Plan 5** | Windows MVP 客户端 | Tauri 2 + React 桌面 UI、完整产品形态 |
