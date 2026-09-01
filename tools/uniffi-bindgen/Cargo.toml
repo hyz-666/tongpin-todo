@@ -1,0 +1,20 @@
+[package]
+name = "uniffi-bindgen"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+publish = false
+
+# Dev tool: exposes the uniffi-bindgen CLI pinned to the workspace's uniffi
+# version. Since uniffi 0.29 the `uniffi_bindgen` crate no longer ships a
+# binary, so the documented approach is a tiny workspace binary that calls
+# `uniffi::uniffi_bindgen_main()`. Run it with:
+#
+#   cargo run -p uniffi-bindgen -- generate --library <cdylib> --language kotlin
+#
+[[bin]]
+name = "uniffi-bindgen"
+path = "src/main.rs"
+
+[dependencies]
+uniffi = { workspace = true, features = ["cli"] }

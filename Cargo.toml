@@ -10,6 +10,7 @@ members = [
     "crates/todo-uniffi",
     "crates/todo-testkit",
     "apps/windows/src-tauri",
+    "tools/uniffi-bindgen",
 ]
 
 [workspace.package]

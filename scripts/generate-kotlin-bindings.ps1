@@ -36,16 +36,14 @@ if (-not (Test-Path $libPath)) {
     throw "built library not found: $libPath"
 }
 
-# 4. Generate Kotlin bindings.
+# 4. Generate Kotlin bindings using the workspace-pinned bindgen tool.
+# Since uniffi 0.29 the `uniffi_bindgen` crate ships no binary; we invoke the
+# workspace tool crate (tools/uniffi-bindgen) which pins the exact uniffi
+# version via `uniffi::uniffi_bindgen_main()`.
 $outDir = Join-Path $Root $OutputPath
 New-Item -ItemType Directory -Force -Path $outDir | Out-Null
 
-$bindgen = Get-Command uniffi-bindgen -ErrorAction SilentlyContinue
-if ($null -eq $bindgen) {
-    throw 'uniffi-bindgen not found. Install with: cargo install uniffi_bindgen'
-}
-
-& uniffi-bindgen generate --library $libPath --language kotlin --out-dir $outDir
+& cargo run -p uniffi-bindgen -- generate --library $libPath --language kotlin --out-dir $outDir
 if ($LASTEXITCODE -ne 0) { throw 'uniffi-bindgen generate failed' }
 
 Write-Output "Kotlin bindings written to $outDir"
