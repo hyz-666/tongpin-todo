@@ -2,22 +2,22 @@ package com.tongpin.todo.lifecycle
 
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import com.tongpin.todo.sync.SyncController
+import com.tongpin.todo.sync.LanSyncManager
 
 /**
  * Observes the process lifecycle and maps foreground/background transitions to
- * sync triggers. Foregrounding triggers a sync pass; backgrounding can pause
- * eager syncing (the OS already defers periodic work).
+ * LAN sync lifecycle: foregrounding starts mDNS discovery and triggers a sync
+ * pass; backgrounding tears both down (the OS already defers periodic work).
  */
 class SyncLifecycleObserver(
-    private val controller: SyncController,
+    private val syncManager: LanSyncManager,
 ) : DefaultLifecycleObserver {
 
     override fun onStart(owner: LifecycleOwner) {
-        controller.onForeground()
+        syncManager.onForeground()
     }
 
     override fun onStop(owner: LifecycleOwner) {
-        controller.onBackground()
+        syncManager.onBackground()
     }
 }
