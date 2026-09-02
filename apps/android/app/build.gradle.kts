@@ -7,6 +7,16 @@ plugins {
     alias(libs.plugins.kotlin.compose)
 }
 
+// Release signing: load keystore.properties (git-ignored) if present; otherwise
+// fall back to debug signing so `assembleRelease` still produces an installable
+// APK during local development. See docs/development/android-toolchain.md.
+val keystoreProperties = java.util.Properties()
+val keystorePropertiesFile = project.file("keystore.properties")
+val hasReleaseKeystore = keystorePropertiesFile.exists()
+if (hasReleaseKeystore) {
+    keystorePropertiesFile.inputStream().use { keystoreProperties.load(it) }
+}
+
 android {
     namespace = "com.tongpin.todo"
     compileSdk = 37
@@ -33,6 +43,17 @@ android {
         }
     }
 
+    signingConfigs {
+        if (hasReleaseKeystore) {
+            create("release") {
+                storeFile = project.file(keystoreProperties.getProperty("storeFile"))
+                storePassword = keystoreProperties.getProperty("storePassword")
+                keyAlias = keystoreProperties.getProperty("keyAlias")
+                keyPassword = keystoreProperties.getProperty("keyPassword")
+            }
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = true
@@ -41,6 +62,13 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
             )
+            // Signed with the release keystore when available, otherwise debug-signed
+            // so local `assembleRelease` still works without secrets in the repo.
+            signingConfig = if (hasReleaseKeystore) {
+                signingConfigs.getByName("release")
+            } else {
+                signingConfigs.getByName("debug")
+            }
         }
     }
 

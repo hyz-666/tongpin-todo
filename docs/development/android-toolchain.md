@@ -113,8 +113,12 @@ cross-compile (arm64-v8a + x86_64 into `app/src/main/jniLibs`) → `gradle assem
 
 ## Release signing
 
-`app/build.gradle.kts` does not embed signing secrets. Configure a `keystore.properties`
-next to `app/build.gradle.kts` (git-ignored) with:
+`app/build.gradle.kts` does not embed signing secrets. The `release` build type loads a
+`signingConfigs.release` block **only when** a `keystore.properties` file exists next to
+`app/build.gradle.kts` (git-ignored); otherwise it falls back to debug signing so local
+`assembleRelease` still produces an installable (but not store-publishable) APK.
+
+Create `apps/android/app/keystore.properties`:
 
 ```properties
 storeFile=../keystore/tongpin.jks
@@ -123,8 +127,17 @@ keyAlias=tongpin
 keyPassword=...
 ```
 
-Then wire `signingConfigs` in `app/build.gradle.kts` to load it before `assembleRelease`.
-Keep the `.jks` out of the repository.
+`storeFile` is resolved relative to the `app/` module, so `../keystore/tongpin.jks` maps to
+`apps/android/keystore/tongpin.jks`. Generate the keystore with:
+
+```powershell
+keytool -genkeypair -v -keystore apps/android/keystore/tongpin.jks `
+  -alias tongpin -keyalg RSA -keysize 4096 -validity 10000 `
+  -storetype JKS
+```
+
+Both `keystore.properties` and the `keystore/` directory (and any `*.jks` / `*.keystore`)
+are git-ignored — never commit them.
 
 ## Known environment notes
 

@@ -64,8 +64,20 @@
 - [ ] 物理设备证据矩阵（见 `device-evidence-matrix.md`）已填写
 - [ ] Git tag 已打（`v0.1.0`）并推送 `origin/main`
 
+## 八、Android 构建门禁（Plan 4）
+
+| 检查项 | 命令 | 通过标准 |
+|--------|------|---------|
+| 工具链检查 | `pwsh -NoProfile -File scripts/check-android-prerequisites.ps1` | 退出码 0 |
+| 端到端构建（debug） | `pwsh -NoProfile -File scripts/build-android.ps1 -Configuration Debug` | 四步全 PASS |
+| 端到端构建（release） | `pwsh -NoProfile -File scripts/build-android.ps1 -Configuration Release` | 四步全 PASS |
+| 契约测试 | `scripts/tests/check-android-prerequisites.Tests.ps1`、`scripts/tests/build-android.Tests.ps1` | 全绿 |
+
+详细证据见 `docs/release/android-release-evidence-matrix.md`。
+
 ## 版本历史
 
 | 版本 | 日期 | 说明 |
 |------|------|------|
 | 0.1.0 | 2026-08-30 | 初始发布清单（Plan 3 建立） |
+| 0.1.0 | 2026-09-01 | 新增 Android 构建门禁一节（Plan 4 Task 10） |
