@@ -29,8 +29,9 @@ tongpin-todo 是一个**本地优先、可跨设备同步**的待办事项应用
 | Plan 4：Android 手机/平板 | ✅ 完成（10/10 Task） |
 | Plan 5：Windows MVP 客户端 | ⬜ 待开始 |
 
-- Git 提交：30+ 个（`ffd1586` → `bcee83b`）
-- 测试：**304 个全绿**，`cargo fmt` + `cargo clippy -D warnings` 全部通过
+- Git 提交：45 个（`ffd1586` → `da90521`）
+- 测试：**304 个 Rust 测试全绿**，`cargo fmt` + `cargo clippy -D warnings` 全部通过
+- Android 契约测试：`check-android-prerequisites.Tests.ps1`（8 项）+ `build-android.Tests.ps1`（11 项）全绿
 - 统一门禁：`scripts/verify.ps1`（fmt + clippy + test）
 - 仓库：https://github.com/hyz-666/tongpin-todo
 
@@ -217,7 +218,8 @@ Operation {
 | `411af22` | 任务编辑对话框（新建/编辑） |
 | `1e2a80e` | 接入生命周期与网络同步触发 |
 | `24f3cdf` | mDNS 发现与局域网同步管理器 |
-| Task 10 | 构建脚本 + 工具链文档 |
+| `e007325` | 端到端构建脚本 + 工具链文档 |
+| `da90521` | release 签名配置 + 发布证据矩阵 + gitignore 修正 |
 
 ---
 
