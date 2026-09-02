@@ -19,7 +19,7 @@ tongpin-todo 是一个**本地优先、可跨设备同步**的待办事项应用
 
 ## 2. 当前状态
 
-**Plan 1（core-local-data）、Plan 2（lan-sync-security）、Plan 3（跨设备发布）与 Plan 4（Android 手机/平板）均已 100% 完成。**
+**Plan 1–4 均已 100% 完成，Plan 5（Windows MVP 客户端）进行中。**
 
 | 里程碑 | 状态 |
 |--------|------|
@@ -27,7 +27,7 @@ tongpin-todo 是一个**本地优先、可跨设备同步**的待办事项应用
 | Plan 2：LAN 同步与安全 | ✅ 完成（10/10 Task） |
 | Plan 3：跨设备发布 | ✅ 完成（10/10 Task） |
 | Plan 4：Android 手机/平板 | ✅ 完成（10/10 Task） |
-| Plan 5：Windows MVP 客户端 | ⬜ 待开始 |
+| Plan 5：Windows MVP 客户端 | 🔄 进行中（0/10 Task） |
 
 - Git 提交：45 个（`ffd1586` → `da90521`）
 - 测试：**304 个 Rust 测试全绿**，`cargo fmt` + `cargo clippy -D warnings` 全部通过
@@ -55,6 +55,9 @@ tongpin-todo 是一个**本地优先、可跨设备同步**的待办事项应用
 | Android 构建 | AGP 9.2.0 / Gradle 9.4.1 / JDK 17 / compileSdk 37 / minSdk 31 / NDK 28.2.13676358 |
 | Android FFI 桥接 | JNA 5.16.0（UniFFI Kotlin 绑定）+ `cargo ndk` 交叉编译 |
 | 绑定生成 | `tools/uniffi-bindgen`（workspace 工具 crate，锁定 uniffi cli feature） |
+| Windows 桌面框架 | Tauri 2 + WebView2（目标 Windows 10/11） |
+| Windows UI | Vite + React + TypeScript + MUI（Material 3）+ Zustand |
+| Windows 密钥存储 | Windows DPAPI（`CryptProtectData` / `CryptUnprotectData`） |
 
 ---
 
@@ -227,4 +230,4 @@ Operation {
 
 | Plan | 内容 | 关键点 |
 |------|------|--------|
-| **Plan 5** | Windows MVP 客户端 | Tauri 2 + React 桌面 UI、完整产品形态 |
+| **Plan 5** | Windows MVP 客户端 | 🔄 进行中，详见 `docs/development/plan5-windows-client.md` |
