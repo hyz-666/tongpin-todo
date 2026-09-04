@@ -1,4 +1,9 @@
-import { Container, Typography, CssBaseline, ThemeProvider, createTheme } from "@mui/material";
+import { useEffect } from "react";
+import { appDataDir } from "@tauri-apps/api/path";
+import { Box, CssBaseline, ThemeProvider, createTheme } from "@mui/material";
+import Sidebar from "./components/Sidebar";
+import TaskList from "./components/TaskList";
+import { useTodoStore } from "./store";
 
 const theme = createTheme({
   palette: {
@@ -8,17 +13,35 @@ const theme = createTheme({
 });
 
 export default function App() {
+  const ready = useTodoStore((s) => s.ready);
+  const error = useTodoStore((s) => s.error);
+  const open = useTodoStore((s) => s.open);
+
+  useEffect(() => {
+    (async () => {
+      const dir = await appDataDir();
+      await open(`${dir}profile`);
+    })();
+  }, [open]);
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Container maxWidth="md" sx={{ mt: 4 }}>
-        <Typography variant="h4" component="h1">
-          tongpin-todo
-        </Typography>
-        <Typography variant="body1" color="text.secondary" sx={{ mt: 1 }}>
-          Windows 客户端骨架已就绪（Task 1）。任务列表与同步将在后续任务接入。
-        </Typography>
-      </Container>
+      {error ? (
+        <Box sx={{ p: 3 }}>
+          <Box sx={{ fontWeight: 500, mb: 1 }}>启动失败</Box>
+          <Box sx={{ color: "error.main" }}>{error}</Box>
+        </Box>
+      ) : !ready ? (
+        <Box sx={{ p: 3 }}>正在加载…</Box>
+      ) : (
+        <Box sx={{ display: "flex", height: "100vh" }}>
+          <Sidebar />
+          <Box sx={{ flexGrow: 1, overflow: "auto" }}>
+            <TaskList />
+          </Box>
+        </Box>
+      )}
     </ThemeProvider>
   );
 }
