@@ -83,18 +83,21 @@ pub enum CommandDto {
 }
 
 #[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct TaskQueryDto {
     pub list: String,
     pub active_only: bool,
 }
 
 #[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct PageDto {
     pub cursor: Option<String>,
     pub limit: u32,
 }
 
 #[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct TaskSummaryDto {
     pub id: String,
     pub title: String,
@@ -105,18 +108,21 @@ pub struct TaskSummaryDto {
 }
 
 #[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct PagedTasksDto {
     pub items: Vec<TaskSummaryDto>,
     pub next_cursor: Option<String>,
 }
 
 #[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct SearchHitDto {
     pub task_id: String,
     pub title: String,
 }
 
 #[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct MutationReceiptDto {
     pub operation_ids: Vec<String>,
     pub affected_entities: Vec<String>,
@@ -124,12 +130,14 @@ pub struct MutationReceiptDto {
 }
 
 #[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct PeerStatusDto {
     pub device_id: String,
     pub reachable: bool,
 }
 
 #[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct RuntimeStatusDto {
     pub replica: String,
     pub peers: Vec<PeerStatusDto>,
