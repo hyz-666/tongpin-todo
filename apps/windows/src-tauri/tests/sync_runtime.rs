@@ -1,6 +1,6 @@
 //! Sync runtime: generation, sessions, and dial preference.
 
-use tongpin_windows::{SyncRuntime, preferred_dialer};
+use tongpin_windows_lib::{SyncRuntime, preferred_dialer};
 
 #[test]
 fn network_change_bumps_generation() {
@@ -30,6 +30,6 @@ fn lower_device_id_is_preferred_dialer() {
 
 #[test]
 fn listener_binds_ephemeral_port() {
-    let handle = tongpin_windows::ListenerHandle::bind_loopback().unwrap();
+    let handle = tongpin_windows_lib::ListenerHandle::bind_loopback().unwrap();
     assert!(handle.port > 0);
 }

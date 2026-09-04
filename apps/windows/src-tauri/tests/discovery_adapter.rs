@@ -2,7 +2,7 @@
 
 use std::sync::Mutex;
 
-use tongpin_windows::{DiscoveryBackend, RawService, to_candidates};
+use tongpin_windows_lib::{DiscoveryBackend, RawService, to_candidates};
 
 /// A fake DNS-SD backend for tests.
 struct FakeBackend {

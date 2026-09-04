@@ -19,7 +19,11 @@ tauri-build = { version = "2", features = [] }
 tauri = { version = "2", features = [] }
 serde = { workspace = true }
 serde_json = { workspace = true }
+windows = { version = "0.61", features = ["Win32_Security_Cryptography", "Win32_Foundation"] }
+rand = { workspace = true }
 todo-core = { path = "../../../crates/todo-core" }
+todo-domain = { path = "../../../crates/todo-domain" }
+todo-storage = { path = "../../../crates/todo-storage" }
 todo-crypto = { path = "../../../crates/todo-crypto" }
 todo-discovery = { path = "../../../crates/todo-discovery" }
 todo-protocol = { path = "../../../crates/todo-protocol" }

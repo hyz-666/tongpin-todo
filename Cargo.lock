@@ -4509,6 +4509,7 @@ name = "tongpin-windows"
 version = "0.1.0"
 dependencies = [
  "mdns-sd",
+ "rand",
  "serde",
  "serde_json",
  "tauri",
@@ -4517,9 +4518,12 @@ dependencies = [
  "todo-core",
  "todo-crypto",
  "todo-discovery",
+ "todo-domain",
  "todo-protocol",
+ "todo-storage",
  "tokio",
  "uuid",
+ "windows",
 ]
 
 [[package]]
