@@ -6,6 +6,7 @@ import type {
   PagedTasks,
   RuntimeStatus,
   SearchHit,
+  TaskDetails,
   TaskQuery,
 } from "./types";
 
@@ -23,6 +24,10 @@ export function listTasks(query: TaskQuery, page: Page, today: string): Promise<
 
 export function search(text: string, limit: number): Promise<SearchHit[]> {
   return invoke("search", { text, limit });
+}
+
+export function taskDetails(id: string): Promise<TaskDetails> {
+  return invoke("task_details", { id });
 }
 
 export function runtimeStatus(): Promise<RuntimeStatus> {

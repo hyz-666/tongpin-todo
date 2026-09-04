@@ -27,6 +27,7 @@ pub fn run() {
             commands::dispatch,
             commands::list_tasks,
             commands::search,
+            commands::task_details,
             commands::runtime_status,
             commands::close_core,
         ])

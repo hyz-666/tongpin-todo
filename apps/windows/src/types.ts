@@ -57,6 +57,18 @@ export interface MutationReceipt {
   projectionRevision: number;
 }
 
+export interface TaskDetails {
+  id: string;
+  title: string;
+  description: string;
+  dueDate?: string | null;
+  dueTime?: string | null;
+  priority: string;
+  completed: boolean;
+  listId?: string | null;
+  tags: string[];
+}
+
 export interface PeerStatus {
   deviceId: string;
   reachable: boolean;

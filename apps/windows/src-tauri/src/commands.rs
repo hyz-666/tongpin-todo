@@ -143,6 +143,20 @@ pub struct RuntimeStatusDto {
     pub peers: Vec<PeerStatusDto>,
 }
 
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TaskDetailsDto {
+    pub id: String,
+    pub title: String,
+    pub description: String,
+    pub due_date: Option<String>,
+    pub due_time: Option<String>,
+    pub priority: String,
+    pub completed: bool,
+    pub list_id: Option<String>,
+    pub tags: Vec<String>,
+}
+
 // --- conversions ---
 
 fn parse_id(s: &str) -> Result<EntityId, String> {
@@ -179,6 +193,14 @@ fn parse_priority(s: &str) -> Priority {
         "high" => Priority::High,
         _ => Priority::None,
     }
+}
+
+fn fmt_date(d: LocalDate) -> String {
+    format!("{:04}-{:02}-{:02}", d.year, d.month, d.day)
+}
+
+fn fmt_time(t: LocalTime) -> String {
+    format!("{:02}:{:02}", t.hour, t.minute)
 }
 
 fn to_command(cmd: CommandDto) -> Result<Command, String> {
@@ -275,7 +297,7 @@ fn task_summary_to_dto(t: todo_core::TaskSummary) -> TaskSummaryDto {
         id: t.id.to_string(),
         title: t.title,
         completed: t.completed,
-        due_date: t.due_date.map(|d| format!("{d:?}")),
+        due_date: t.due_date.map(fmt_date),
         priority: format!("{:?}", t.priority).to_lowercase(),
         list_id: t.list_id.map(|l| l.to_string()),
     }
@@ -424,6 +446,25 @@ pub fn search(
                 title: h.title,
             })
             .collect())
+    })
+}
+
+#[tauri::command]
+pub fn task_details(state: State<'_, AppState>, id: String) -> Result<TaskDetailsDto, String> {
+    with_handle(&state, |handle| {
+        let entity_id = parse_id(&id)?;
+        let d = handle.task_details(&entity_id).map_err(|e| e.to_string())?;
+        Ok(TaskDetailsDto {
+            id: d.id.to_string(),
+            title: d.title,
+            description: d.description,
+            due_date: d.due_date.map(fmt_date),
+            due_time: d.due_time.map(fmt_time),
+            priority: format!("{:?}", d.priority).to_lowercase(),
+            completed: d.completed,
+            list_id: d.list_id.map(|l| l.to_string()),
+            tags: d.tags.iter().map(|t| t.to_string()).collect(),
+        })
     })
 }
 

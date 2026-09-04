@@ -14,6 +14,7 @@ interface TodoState {
   open: (profilePath: string) => Promise<void>;
   loadTasks: (list?: string) => Promise<void>;
   dispatch: (command: Command) => Promise<void>;
+  dispatchMany: (commands: Command[]) => Promise<void>;
   search: (text: string) => Promise<void>;
   setCurrentList: (list: string) => void;
   refreshRuntime: () => Promise<void>;
@@ -57,6 +58,17 @@ export const useTodoStore = create<TodoState>((set, get) => ({
   dispatch: async (command) => {
     try {
       await api.dispatch(command);
+      await get().loadTasks();
+    } catch (e) {
+      set({ error: String(e) });
+    }
+  },
+
+  dispatchMany: async (commands) => {
+    try {
+      for (const c of commands) {
+        await api.dispatch(c);
+      }
       await get().loadTasks();
     } catch (e) {
       set({ error: String(e) });
