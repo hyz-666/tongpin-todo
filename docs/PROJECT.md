@@ -27,11 +27,12 @@ tongpin-todo 是一个**本地优先、可跨设备同步**的待办事项应用
 | Plan 2：LAN 同步与安全 | ✅ 完成（10/10 Task） |
 | Plan 3：跨设备发布 | ✅ 完成（10/10 Task） |
 | Plan 4：Android 手机/平板 | ✅ 完成（10/10 Task） |
-| Plan 5：Windows MVP 客户端 | 🔄 进行中（0/10 Task） |
+| Plan 5：Windows MVP 客户端 | 🔄 进行中（8/10 Task） |
 
-- Git 提交：45 个（`ffd1586` → `da90521`）
+- Git 提交：53 个（`ffd1586` → `88a6381`）
 - 测试：**304 个 Rust 测试全绿**，`cargo fmt` + `cargo clippy -D warnings` 全部通过
 - Android 契约测试：`check-android-prerequisites.Tests.ps1`（8 项）+ `build-android.Tests.ps1`（11 项）全绿
+- Windows 契约测试：`build-windows.Tests.ps1`（14 项）全绿
 - 统一门禁：`scripts/verify.ps1`（fmt + clippy + test）
 - 仓库：https://github.com/hyz-666/tongpin-todo
 
@@ -223,6 +224,20 @@ Operation {
 | `24f3cdf` | mDNS 发现与局域网同步管理器 |
 | `e007325` | 端到端构建脚本 + 工具链文档 |
 | `da90521` | release 签名配置 + 发布证据矩阵 + gitignore 修正 |
+
+**Plan 5 — Windows MVP 客户端**：
+
+| Commit | 内容 |
+|--------|------|
+| `b3c4f3f` | 启动 Plan 5 计划文档 |
+| `7b12d67` | Tauri 2 工程骨架（Vite + React + MUI） |
+| `315cae8` | Rust 命令层 + DPAPI 密钥管理 |
+| `4a266d8` | 前端数据层（invoke 封装 + Zustand + TS 类型） |
+| `e23667a` | 任务列表 UI（智能列表导航 + 完成切换/删除） |
+| `2455ce9` | 搜索与任务编辑（FTS + 编辑对话框） |
+| `2a8069e` | 后台 LAN 同步集成（discovery + SyncOrchestrator + 状态指示） |
+| `cfacfb9` | 发布构建与签名（tauri build + Authenticode） |
+| `88a6381` | Windows 发布证据矩阵 + 构建门禁 |
 
 ---
 
