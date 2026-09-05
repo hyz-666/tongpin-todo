@@ -58,11 +58,11 @@
 
 ## 七、发布前人工确认
 
-- [ ] `contracts/core-api-version.json` 版本号已确认
+- [x] `contracts/core-api-version.json` 版本号已确认（`coreApi: 1` 与命令层契约测试一致）
 - [ ] `docs/protocol/lan-sync-v1.md` 协议文档与实现一致
 - [ ] `docs/protocol/security-threat-model.md` 威胁模型已评审
 - [ ] 物理设备证据矩阵（见 `device-evidence-matrix.md`）已填写
-- [ ] Git tag 已打（`v0.1.0`）并推送 `origin/main`
+- [x] Git tag 已打（`v0.1.0`）并推送 `origin/main`
 
 ## 八、Android 构建门禁（Plan 4）
 
@@ -94,3 +94,4 @@
 | 0.1.0 | 2026-08-30 | 初始发布清单（Plan 3 建立） |
 | 0.1.0 | 2026-09-01 | 新增 Android 构建门禁一节（Plan 4 Task 10） |
 | 0.1.0 | 2026-09-05 | 新增 Windows 构建门禁一节（Plan 5 Task 8） |
+| 0.1.0 | 2026-09-06 | Plan 5 收尾：统一门禁全绿，打 `v0.1.0` 发布 tag |
