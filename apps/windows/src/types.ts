@@ -78,3 +78,18 @@ export interface RuntimeStatus {
   replica: string;
   peers: PeerStatus[];
 }
+
+export type SyncState = "offline" | "syncing" | "connected";
+
+export interface SyncPeer {
+  instance: string;
+  hint: string;
+  endpoint: string;
+}
+
+export interface SyncStatus {
+  state: SyncState;
+  generation: number;
+  sessionCount: number;
+  peers: SyncPeer[];
+}

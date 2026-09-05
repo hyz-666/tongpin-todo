@@ -1,13 +1,14 @@
 //! Tauri command layer: exposes `todo-core` to the React frontend.
 
 use std::path::{Path, PathBuf};
+use std::sync::Arc;
 
 use serde::{Deserialize, Serialize};
 use tauri::State;
 
 use todo_core::{
     CoreError, CoreHandle, ListScope, MutationReceipt, OperationSigner, Page, SignatureBytes,
-    SignatureVerifier, TaskQuery, TaskScope,
+    SignatureVerifier, TaskQuery, TaskScope, TriggerSource,
 };
 use todo_domain::clock::{LocalDate, LocalTime};
 use todo_domain::command::{
@@ -18,6 +19,7 @@ use todo_domain::ids::{DeviceId, EntityId};
 use todo_domain::model::Priority;
 use todo_storage::config::{SecretBytes, StorageConfig};
 
+use crate::background_sync::{SyncService, SyncStatus};
 use crate::security;
 use crate::state::AppState;
 
@@ -484,6 +486,23 @@ pub fn runtime_status(state: State<'_, AppState>) -> Result<RuntimeStatusDto, St
                 .collect(),
         })
     })
+}
+
+#[tauri::command]
+pub fn sync_status(sync: State<'_, Arc<SyncService>>) -> Result<SyncStatus, String> {
+    Ok(sync.status())
+}
+
+#[tauri::command]
+pub fn trigger_sync(sync: State<'_, Arc<SyncService>>) -> Result<(), String> {
+    sync.on_trigger(TriggerSource::Manual);
+    Ok(())
+}
+
+#[tauri::command]
+pub fn notify_network_change(sync: State<'_, Arc<SyncService>>) -> Result<(), String> {
+    sync.on_network_change();
+    Ok(())
 }
 
 #[tauri::command]

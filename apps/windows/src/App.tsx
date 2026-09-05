@@ -2,7 +2,9 @@ import { useEffect } from "react";
 import { appDataDir } from "@tauri-apps/api/path";
 import { Box, CssBaseline, ThemeProvider, createTheme } from "@mui/material";
 import Sidebar from "./components/Sidebar";
+import SyncStatusIndicator from "./components/SyncStatusIndicator";
 import TaskList from "./components/TaskList";
+import * as api from "./api";
 import { useTodoStore } from "./store";
 
 const theme = createTheme({
@@ -16,6 +18,7 @@ export default function App() {
   const ready = useTodoStore((s) => s.ready);
   const error = useTodoStore((s) => s.error);
   const open = useTodoStore((s) => s.open);
+  const refreshSync = useTodoStore((s) => s.refreshSync);
 
   useEffect(() => {
     (async () => {
@@ -23,6 +26,21 @@ export default function App() {
       await open(`${dir}profile`);
     })();
   }, [open]);
+
+  // Poll sync status and forward browser online/offline events as network
+  // changes to the background sync engine.
+  useEffect(() => {
+    if (!ready) return;
+    const poll = setInterval(() => void refreshSync(), 2000);
+    const onOnline = () => void api.notifyNetworkChange();
+    window.addEventListener("online", onOnline);
+    window.addEventListener("offline", onOnline);
+    return () => {
+      clearInterval(poll);
+      window.removeEventListener("online", onOnline);
+      window.removeEventListener("offline", onOnline);
+    };
+  }, [ready, refreshSync]);
 
   return (
     <ThemeProvider theme={theme}>
@@ -38,6 +56,7 @@ export default function App() {
         <Box sx={{ display: "flex", height: "100vh" }}>
           <Sidebar />
           <Box sx={{ flexGrow: 1, overflow: "auto" }}>
+            <SyncStatusIndicator />
             <TaskList />
           </Box>
         </Box>

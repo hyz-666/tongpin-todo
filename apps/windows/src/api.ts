@@ -6,6 +6,7 @@ import type {
   PagedTasks,
   RuntimeStatus,
   SearchHit,
+  SyncStatus,
   TaskDetails,
   TaskQuery,
 } from "./types";
@@ -32,6 +33,18 @@ export function taskDetails(id: string): Promise<TaskDetails> {
 
 export function runtimeStatus(): Promise<RuntimeStatus> {
   return invoke("runtime_status");
+}
+
+export function syncStatus(): Promise<SyncStatus> {
+  return invoke("sync_status");
+}
+
+export function triggerSync(): Promise<void> {
+  return invoke("trigger_sync");
+}
+
+export function notifyNetworkChange(): Promise<void> {
+  return invoke("notify_network_change");
 }
 
 export function closeCore(): Promise<void> {

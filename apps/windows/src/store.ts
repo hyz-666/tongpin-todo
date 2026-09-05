@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import * as api from "./api";
-import type { Command, RuntimeStatus, SearchHit, TaskSummary } from "./types";
+import type { Command, RuntimeStatus, SearchHit, SyncStatus, TaskSummary } from "./types";
 
 interface TodoState {
   profilePath: string;
@@ -10,6 +10,7 @@ interface TodoState {
   tasks: TaskSummary[];
   searchHits: SearchHit[];
   runtime: RuntimeStatus | null;
+  sync: SyncStatus | null;
 
   open: (profilePath: string) => Promise<void>;
   loadTasks: (list?: string) => Promise<void>;
@@ -18,6 +19,7 @@ interface TodoState {
   search: (text: string) => Promise<void>;
   setCurrentList: (list: string) => void;
   refreshRuntime: () => Promise<void>;
+  refreshSync: () => Promise<void>;
   close: () => Promise<void>;
 }
 
@@ -29,6 +31,7 @@ export const useTodoStore = create<TodoState>((set, get) => ({
   tasks: [],
   searchHits: [],
   runtime: null,
+  sync: null,
 
   open: async (profilePath) => {
     try {
@@ -36,6 +39,7 @@ export const useTodoStore = create<TodoState>((set, get) => ({
       set({ profilePath, ready: true, error: null });
       await get().loadTasks();
       await get().refreshRuntime();
+      await get().refreshSync();
     } catch (e) {
       set({ error: String(e) });
     }
@@ -59,6 +63,7 @@ export const useTodoStore = create<TodoState>((set, get) => ({
     try {
       await api.dispatch(command);
       await get().loadTasks();
+      await get().refreshSync();
     } catch (e) {
       set({ error: String(e) });
     }
@@ -70,6 +75,7 @@ export const useTodoStore = create<TodoState>((set, get) => ({
         await api.dispatch(c);
       }
       await get().loadTasks();
+      await get().refreshSync();
     } catch (e) {
       set({ error: String(e) });
     }
@@ -99,10 +105,19 @@ export const useTodoStore = create<TodoState>((set, get) => ({
     }
   },
 
+  refreshSync: async () => {
+    try {
+      const sync = await api.syncStatus();
+      set({ sync });
+    } catch (e) {
+      // Sync status is best-effort; do not surface transient errors to the user.
+    }
+  },
+
   close: async () => {
     try {
       await api.closeCore();
-      set({ ready: false, tasks: [], searchHits: [], runtime: null });
+      set({ ready: false, tasks: [], searchHits: [], runtime: null, sync: null });
     } catch (e) {
       set({ error: String(e) });
     }
