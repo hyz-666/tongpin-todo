@@ -41,8 +41,8 @@ impl SignatureVerifier for NoopVerifier {
 
 // --- DTO types (serde, the FFI boundary for invoke()) ---
 
-#[derive(Deserialize)]
-#[serde(tag = "type", rename_all = "camelCase")]
+#[derive(Deserialize, Debug)]
+#[serde(tag = "type", rename_all = "camelCase", rename_all_fields = "camelCase")]
 pub enum CommandDto {
     CreateTask {
         title: String,
