@@ -75,9 +75,22 @@
 
 详细证据见 `docs/release/android-release-evidence-matrix.md`。
 
+## 九、Windows 构建门禁（Plan 5）
+
+| 检查项 | 命令 | 通过标准 |
+|--------|------|---------|
+| 前端构建 | `cd apps/windows && npm run build` | tsc + vite 零错误 |
+| Rust 命令层编译 | `cargo check -p tongpin-windows` | 零错误 |
+| 单元/集成测试 | `cargo test -p tongpin-windows` | 全绿 |
+| 发布构建与签名 | `pwsh -NoProfile -File scripts/build-windows.ps1 [-Certificate <pfx>]` | BUILD 步骤 PASS（`signed` 视证书而定） |
+| 契约测试 | `pwsh -NoProfile -File scripts/tests/build-windows.Tests.ps1` | PASS，FAIL=0 |
+
+详细证据见 `docs/release/windows-release-evidence-matrix.md`。
+
 ## 版本历史
 
 | 版本 | 日期 | 说明 |
 |------|------|------|
 | 0.1.0 | 2026-08-30 | 初始发布清单（Plan 3 建立） |
 | 0.1.0 | 2026-09-01 | 新增 Android 构建门禁一节（Plan 4 Task 10） |
+| 0.1.0 | 2026-09-05 | 新增 Windows 构建门禁一节（Plan 5 Task 8） |
