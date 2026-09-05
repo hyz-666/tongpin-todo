@@ -29,7 +29,7 @@ tongpin-todo 是一个**本地优先、可跨设备同步**的待办事项应用
 | Plan 4：Android 手机/平板 | ✅ 完成（10/10 Task） |
 | Plan 5：Windows MVP 客户端 | ✅ 完成（10/10 Task） |
 
-- Git 提交：57 个（`ffd1586` → `01eb645`）
+- Git 提交：59 个（`ffd1586` → `f5d14a4`）
 - 测试：**304 个 Rust 测试全绿**，`cargo fmt` + `cargo clippy -D warnings` 全部通过
 - Android 契约测试：`check-android-prerequisites.Tests.ps1`（8 项）+ `build-android.Tests.ps1`（11 项）全绿
 - Windows 契约测试：`build-windows.Tests.ps1`（14 项）全绿
