@@ -1,0 +1,12 @@
+{
+  "built": true,
+  "signed": true,
+  "artifacts": [
+    "apps/windows/src-tauri/target/release/bundle/nsis/tongpin-todo_0.1.0_x64-setup.exe",
+    "apps/windows/src-tauri/target/release/bundle/msi/tongpin-todo_0.1.0_x64_en-US.msi"
+  ],
+  "steps": [
+    { "code": "BUILD", "label": "tauri build (MSI + NSIS)", "ok": true, "exit_code": 0, "duration_ms": 1, "output": "" },
+    { "code": "SIGN", "label": "Authenticode signing", "ok": true, "exit_code": 0, "duration_ms": 1, "output": "" }
+  ]
+}

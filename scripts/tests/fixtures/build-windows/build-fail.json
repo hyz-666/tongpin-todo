@@ -1,0 +1,9 @@
+{
+  "built": false,
+  "signed": false,
+  "artifacts": [],
+  "steps": [
+    { "code": "BUILD", "label": "tauri build (MSI + NSIS)", "ok": false, "exit_code": 1, "duration_ms": 1, "output": "error: build failed" },
+    { "code": "SIGN", "label": "Authenticode signing (skipped)", "ok": true, "exit_code": 0, "duration_ms": 0, "output": "no -Certificate provided; skipping signing" }
+  ]
+}
