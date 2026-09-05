@@ -19,7 +19,7 @@ tongpin-todo 是一个**本地优先、可跨设备同步**的待办事项应用
 
 ## 2. 当前状态
 
-**Plan 1–4 均已 100% 完成，Plan 5（Windows MVP 客户端）进行中。**
+**Plan 1–5 均已 100% 完成。**
 
 | 里程碑 | 状态 |
 |--------|------|
@@ -27,9 +27,9 @@ tongpin-todo 是一个**本地优先、可跨设备同步**的待办事项应用
 | Plan 2：LAN 同步与安全 | ✅ 完成（10/10 Task） |
 | Plan 3：跨设备发布 | ✅ 完成（10/10 Task） |
 | Plan 4：Android 手机/平板 | ✅ 完成（10/10 Task） |
-| Plan 5：Windows MVP 客户端 | 🔄 进行中（8/10 Task） |
+| Plan 5：Windows MVP 客户端 | ✅ 完成（10/10 Task） |
 
-- Git 提交：53 个（`ffd1586` → `88a6381`）
+- Git 提交：57 个（`ffd1586` → `01eb645`）
 - 测试：**304 个 Rust 测试全绿**，`cargo fmt` + `cargo clippy -D warnings` 全部通过
 - Android 契约测试：`check-android-prerequisites.Tests.ps1`（8 项）+ `build-android.Tests.ps1`（11 项）全绿
 - Windows 契约测试：`build-windows.Tests.ps1`（14 项）全绿
@@ -238,6 +238,8 @@ Operation {
 | `2a8069e` | 后台 LAN 同步集成（discovery + SyncOrchestrator + 状态指示） |
 | `cfacfb9` | 发布构建与签名（tauri build + Authenticode） |
 | `88a6381` | Windows 发布证据矩阵 + 构建门禁 |
+| `92e9654` | Windows 工具链文档 + PROJECT.md 更新 |
+| `01eb645` | 命令层契约测试 + camelCase 字段 serde 修复（统一门禁收尾） |
 
 ---
 
@@ -245,4 +247,4 @@ Operation {
 
 | Plan | 内容 | 关键点 |
 |------|------|--------|
-| **Plan 5** | Windows MVP 客户端 | 🔄 进行中，详见 `docs/development/plan5-windows-client.md` |
+| **Plan 5** | Windows MVP 客户端 | ✅ 完成，详见 `docs/development/plan5-windows-client.md` |
