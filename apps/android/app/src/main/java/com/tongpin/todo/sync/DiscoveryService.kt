@@ -122,7 +122,7 @@ class DiscoveryService(
     )
 
     companion object {
-        const val SERVICE_TYPE = "_tongpin-todo._tcp."
+        const val SERVICE_TYPE = "_tptodo._tcp."
         private const val TAG = "DiscoveryService"
     }
 }
